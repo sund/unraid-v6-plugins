@@ -2,11 +2,11 @@
 
 <!DOCTYPE PLUGIN [
 <!ENTITY name       "ssh">
-<!ENTITY author     "overbyrn">
+<!ENTITY author     "docgyver">
 <!ENTITY version    "2015.04.25">
 <!ENTITY category   "Network Services">
-<!ENTITY pluginURL  "https://raw.github.com/overbyrn/unraid-v6-plugins/master/&name;.plg">
-<!ENTITY packageURL "https://github.com/overbyrn/unraid-v6-plugins/releases/download/&name;">
+<!ENTITY pluginURL  "https://raw.github.com/docgyver/unraid-v6-plugins/master/&name;.plg">
+<!ENTITY packageURL "https://github.com/docgyver/unraid-v6-plugins/releases/download/&name;">
 <!ENTITY devplugin  "false">
 ]>
 
@@ -215,7 +215,8 @@ $sshversion = shell_exec("/usr/bin/ssh -V 2>&1");
         <tr>
         <td width="30%">
           <form name="ssh_start_stop" method="POST" action="/update.htm" target="progressFrame">
-            <input type="hidden" name="cmd" value="/etc/rc.d/rc.ssh stop">
+            <input type="hidden" name="cmd" value="/plugins/ssh/scripts/rc.ssh">
+            <input type="hidden" name="arg1" value="stop">
             <input type="submit" name="runCmd" value="Stop">
           </form>
         </td>
@@ -224,7 +225,8 @@ $sshversion = shell_exec("/usr/bin/ssh -V 2>&1");
         <tr>
         <td width="30%">
           <form name="ssh_restart" method="POST" action="/update.htm" target="progressFrame">
-            <input type="hidden" name="cmd" value="/etc/rc.d/rc.ssh restart">
+            <input type="hidden" name="cmd" value="/plugins/ssh/scripts/rc.ssh">
+            <input type="hidden" name="arg1" value="restart">
             <input type="submit" name="runCmd" value="Restart">
           </form>
         </td>
@@ -234,7 +236,8 @@ $sshversion = shell_exec("/usr/bin/ssh -V 2>&1");
         <tr>
         <td width="30%">
           <form name="ssh_start" method="POST" action="/update.htm" target="progressFrame">
-            <input type="hidden" name="cmd" value="/etc/rc.d/rc.ssh buttonstart">
+            <input type="hidden" name="cmd" value="/plugins/ssh/scripts/rc.ssh">
+            <input type="hidden" name="arg1" value="buttonstart">
             <input type="submit" name="runCmd" value="Start">
           </form>
         </td>
@@ -255,7 +258,7 @@ $sshversion = shell_exec("/usr/bin/ssh -V 2>&1");
   </div>
   <form name="ssh_settings" id="ssh_settings" method="POST" action="/update.htm" target="progressFrame" onsubmit="return validateForm();">
   <!--note to self: the /return/ in the onsubmit event is important as without it, the submit action is still processed-->
-    <input type="hidden" name="cmd" value="/etc/rc.d/rc.ssh">
+    <input type="hidden" name="cmd" value="/plugins/ssh/scripts/rc.ssh">
     <input type="hidden" name="arg3" id="arg3" maxlength="60" value="wibble">
  
     <table class="settings">
@@ -393,7 +396,7 @@ checkRUNNING(document.ssh_settings);
 </INLINE>
 </FILE>
 
-<FILE Name="/etc/rc.d/rc.&name;" Mode="0770">
+<FILE Name="/usr/local/emhttp/plugins/&name;/scripts/rc.&name;" Mode="0770">
 <INLINE>
 <![CDATA[
 #!/bin/bash
@@ -659,6 +662,20 @@ if [ "&devplugin;" == "true" ]; then
 fi
 
 rm /tmp/plugin-development
+</INLINE>
+</FILE>
+
+<!--
+on install
+-->
+<FILE Name="/tmp/start_ssh.sh">
+<INLINE>
+<![CDATA[
+#!/bin/bash
+/usr/local/emhttp/plugins/ssh/scripts/rc.ssh buttonstart
+
+rm /tmp/start_ssh.sh
+]]>
 </INLINE>
 </FILE>
 
