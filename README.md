@@ -26,7 +26,7 @@ Beets - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/bee
 DenyHosts - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/denyhosts.plg)<br>
 Dropbox - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/dropbox.plg)<br>
 NZBGet - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/nzbget.plg)<br>
-SSH - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/ssh.plg)<br>
+SSH - (https://raw.githubusercontent.com/docgyver/unraid-v6-plugins/master/ssh.plg)<br>
 LMS - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/lms.plg)<br>
 pyload - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/pyload.plg)<br>
 
