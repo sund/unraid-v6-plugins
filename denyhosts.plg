@@ -2,11 +2,11 @@
 
 <!DOCTYPE PLUGIN [
 <!ENTITY name       "denyhosts">
-<!ENTITY author     "overbyrn">
-<!ENTITY version    "2015.06.07">
+<!ENTITY author     "docgyver">
+<!ENTITY version    "2016.02.25">
 <!ENTITY category   "Network Services">
-<!ENTITY pluginURL  "https://raw.github.com/overbyrn/unraid-v6-plugins/master/&name;.plg">
-<!ENTITY packageURL "https://github.com/overbyrn/unraid-v6-plugins/releases/download/&name;">
+<!ENTITY pluginURL  "https://raw.github.com/docgyver/unraid-v6-plugins/master/&name;.plg">
+<!ENTITY packageURL "https://github.com/docgyver/unraid-v6-plugins/releases/download/&name;">
 <!ENTITY devplugin  "false">
 ]>
 
@@ -18,6 +18,7 @@
 
 <!--
 Copyright 2015, Rich Manton (overbyrn)
+Copyright 2016 Todd Pike (docgyver)
 
 The plugin installs DenyHosts, a log-based intrusion prevention security tool for SSH
 
@@ -29,7 +30,7 @@ Plugin file locations:
  
  /boot/config/plugins/denyhosts/denyhosts.cfg                           # non-volatile configuration
 
- /etc/rc.d/rc.denyhosts                                                 # plugin control script
+ /usr/local/emhttp/plugins/denyhosts/scripts/rc.denyhosts               # plugin control script
 
  /usr/local/emhttp/plugins/denyhosts/denyhosts.page                     # page file for webGui menu system
  /usr/local/emhttp/plugins/denyhosts/denyhostsctl.php                   # webGui back-end control 
@@ -84,8 +85,8 @@ DAEMON_LOG=/usr/local/denyhosts/denyhosts.out
 if [ -d /usr/local/emhttp/plugins/&name; ]; then
   rm -r /usr/local/emhttp/plugins/&name;
 fi;
-if [ -f /etc/rc.d/rc.&name; ]; then
-  rm -f /etc/rc.d/rc.&name;
+if [ -f /usr/local/emhttp/plugins/$name;/scripts/rc.&name; ]; then
+  rm -f /usr/local/emhttp/plugins/$name;/scripts/rc.&name;
 fi;
 
 # create denyhosts writable directory for pid file
@@ -95,17 +96,17 @@ if [ ! -e /var/run/&name; ]; then
 fi
 
 # create denyhosts application directory
-mkdir -p /usr/local/&name;
+mkdir -p /usr/local/emhttp/plugins/&name;
 
 # set permissions on application directory
-chown -R root:users /usr/local/&name;
-chmod -R go-rwx,u-x,g+u,ug+X /usr/local/&name;
+chown -R root:users /usr/local/emhttp/plugins/&name;
+chmod -R go-rwx,u-x,g+u,ug+X /usr/local/emhttp/plugins/&name;
   
 #untar denyhosts file to tmp directory
 tar -zxvf /boot/config/plugins/&name;/DenyHosts-2.6.tar.gz -C /tmp
 
 #patch setup.py to correct directory
-sed -i -e '/^libpath = /c\\libpath = \"/usr/local/&name;\"' /tmp/DenyHosts-2.6/setup.py
+sed -i -e '/^libpath = /c\\libpath = \"/usr/local/emhttp/plugins/&name;\"' /tmp/DenyHosts-2.6/setup.py
 
 #install denyhosts
 cd /tmp/DenyHosts-2.6
@@ -123,9 +124,9 @@ The 'remove' script.
 <FILE Run="/bin/bash" Method="remove">
 <INLINE>
 rm -r /usr/local/emhttp/plugins/&name;
-rm -f /etc/rc.d/rc.&name;
+rm -f /usr/local/emhttp/plugins/$name;/scripts/rc.&name;
 rm -rf /boot/config/plugins/&name;
-rm -rf /usr/local/&name;
+rm -rf /usr/local/emhttp/plugins/&name;
 rm -f  /usr/bin/&name;.py
 rm -rf /var/run/&name;
 </INLINE>
@@ -268,7 +269,8 @@ $updates_exist = "false";
         <tr>
         <td width="30%">
           <form name="denyhosts_start_stop" method="POST" action="/update.htm" target="progressFrame">
-            <input type="hidden" name="cmd" value="/etc/rc.d/rc.denyhosts stop">
+            <input type="hidden" name="cmd" value="/etc/rc.d/rc.denyhosts">
+            <input type="hidden" name="arg1" value="stop">
             <input type="submit" name="runCmd" value="Stop">
           </form>
         </td>
@@ -277,7 +279,8 @@ $updates_exist = "false";
         <tr>
         <td width="30%">
           <form name="denyhosts_restart" method="POST" action="/update.htm" target="progressFrame">
-            <input type="hidden" name="cmd" value="/etc/rc.d/rc.denyhosts restart">
+            <input type="hidden" name="cmd" value="/etc/rc.d/rc.denyhosts">
+            <input type="hidden" name="arg1" value="restart">
             <input type="submit" name="runCmd" value="Restart">
           </form>
         </td>
@@ -289,6 +292,7 @@ $updates_exist = "false";
         <td width="30%">
           <form name="denyhosts_start" method="POST" action="/update.htm" target="progressFrame">
             <input type="hidden" name="cmd" value="/etc/rc.d/rc.denyhosts buttonstart">
+            <input type="hidden" name="arg1" value="buttonstart">
             <input type="submit" name="runCmd" value="Start">
           </form>
         </td>
@@ -599,7 +603,7 @@ checkRUNNING(document.denyhosts_settings);
 </INLINE>
 </FILE>
 
-<FILE Name="/etc/rc.d/rc.&name;" Mode="0770">
+<FILE Name="/usr/local/emhttp/plugins/$name;/scripts/rc.&name;" Mode="0770">
 <INLINE>
 <![CDATA[
 #!/bin/bash
@@ -785,7 +789,7 @@ esac
 #!/bin/bash
 # include our config vars and check if the service is set to enable.  if so, bring it up
 source /boot/config/plugins/&name;/denyhosts.cfg
-[[ $SERVICE = "enable" ]] &amp;&amp; /etc/rc.d/rc.&name; buttonstart
+[[ $SERVICE = "enable" ]] &amp;&amp; /usr/local/emhttp/plugins/$name;/scripts/rc.&name; buttonstart
 </INLINE>
 </FILE>
 
@@ -793,7 +797,7 @@ source /boot/config/plugins/&name;/denyhosts.cfg
 <FILE Name="/usr/local/emhttp/plugins/&name;/event/unmounting_disks" Mode="0770">
 <INLINE>
 #!/bin/bash
-/etc/rc.d/rc.&name; stop
+/usr/local/emhttp/plugins/$name;/scripts/rc.&name; stop
 </INLINE>
 </FILE>
 
@@ -809,11 +813,11 @@ if [ "&devplugin;" == "true" ]; then
     ln -s /boot/config/plugins/&name;.php /usr/local/emhttp/plugins/&name;/&name;.php
   fi
   if [ -f /boot/config/plugins/rc.&name; ]; then
-    rm -f /etc/rc.d/rc.&name;
-    ln -s /boot/config/plugins/rc.&name; /etc/rc.d/rc.&name;
+    rm -f /usr/local/emhttp/plugins/$name;/scripts/rc.&name;
+    ln -s /boot/config/plugins/rc.&name; /usr/local/emhttp/plugins/$name;/scripts/rc.&name;
   else
-    mv /etc/rc.d/rc.&name; /boot/config/plugins/rc.&name;
-    ln -s /boot/config/plugins/rc.&name; /etc/rc.d/rc.&name;
+    mv /usr/local/emhttp/plugins/$name;/scripts/rc.&name; /boot/config/plugins/rc.&name;
+    ln -s /boot/config/plugins/rc.&name; /usr/local/emhttp/plugins/$name;/scripts/rc.&name;
   fi
 fi
 </INLINE>
