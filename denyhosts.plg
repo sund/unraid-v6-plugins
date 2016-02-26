@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name       "denyhosts">
 <!ENTITY author     "docgyver">
-<!ENTITY version    "2016.02.25">
+<!ENTITY version    "2016.02.25.2">
 <!ENTITY category   "Network Services">
 <!ENTITY pluginURL  "https://raw.github.com/docgyver/unraid-v6-plugins/master/&name;.plg">
 <!ENTITY packageURL "https://github.com/docgyver/unraid-v6-plugins/releases/download/&name;">
@@ -291,7 +291,7 @@ $updates_exist = "false";
         <tr>
         <td width="30%">
           <form name="denyhosts_start" method="POST" action="/update.htm" target="progressFrame">
-            <input type="hidden" name="cmd" value="/etc/rc.d/rc.denyhosts buttonstart">
+            <input type="hidden" name="cmd" value="/etc/rc.d/rc.denyhosts">
             <input type="hidden" name="arg1" value="buttonstart">
             <input type="submit" name="runCmd" value="Start">
           </form>
