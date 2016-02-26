@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name       "denyhosts">
 <!ENTITY author     "docgyver">
-<!ENTITY version    "2016.02.25.2">
+<!ENTITY version    "2016.02.25.3">
 <!ENTITY category   "Network Services">
 <!ENTITY pluginURL  "https://raw.github.com/docgyver/unraid-v6-plugins/master/&name;.plg">
 <!ENTITY packageURL "https://github.com/docgyver/unraid-v6-plugins/releases/download/&name;">
@@ -85,8 +85,8 @@ DAEMON_LOG=/usr/local/denyhosts/denyhosts.out
 if [ -d /usr/local/emhttp/plugins/&name; ]; then
   rm -r /usr/local/emhttp/plugins/&name;
 fi;
-if [ -f /usr/local/emhttp/plugins/$name;/scripts/rc.&name; ]; then
-  rm -f /usr/local/emhttp/plugins/$name;/scripts/rc.&name;
+if [ -f /usr/local/emhttp/plugins/&name;/scripts/rc.&name; ]; then
+  rm -f /usr/local/emhttp/plugins/&name;/scripts/rc.&name;
 fi;
 
 # create denyhosts writable directory for pid file
@@ -124,7 +124,7 @@ The 'remove' script.
 <FILE Run="/bin/bash" Method="remove">
 <INLINE>
 rm -r /usr/local/emhttp/plugins/&name;
-rm -f /usr/local/emhttp/plugins/$name;/scripts/rc.&name;
+rm -f /usr/local/emhttp/plugins/&name;/scripts/rc.&name;
 rm -rf /boot/config/plugins/&name;
 rm -rf /usr/local/emhttp/plugins/&name;
 rm -f  /usr/bin/&name;.py
@@ -174,7 +174,7 @@ Icon="denyhosts.png"
 <?PHP
 $denyhosts_cfg = parse_ini_file( "/boot/config/plugins/denyhosts/denyhosts.cfg");
 $denyhosts_running = file_exists( "/var/run/denyhosts/denyhosts.pid") ? "yes" : "no";
-$denyhosts_datacheck = shell_exec ( "/etc/rc.d/rc.denyhosts datacheck" );
+$denyhosts_datacheck = shell_exec ( "/usr/local/emhttp/plugins/denyhosts/scripts/rc.denyhosts datacheck" );
 
 //Get local plugin file version
 $denyhosts_localplg = shell_exec('grep "<\!ENTITY version" /boot/config/plugins/denyhosts.plg | cut -d\" -f2');
@@ -269,7 +269,7 @@ $updates_exist = "false";
         <tr>
         <td width="30%">
           <form name="denyhosts_start_stop" method="POST" action="/update.htm" target="progressFrame">
-            <input type="hidden" name="cmd" value="/etc/rc.d/rc.denyhosts">
+            <input type="hidden" name="cmd" value="/usr/local/emhttp/plugins/denyhosts/scripts/rc.denyhosts">
             <input type="hidden" name="arg1" value="stop">
             <input type="submit" name="runCmd" value="Stop">
           </form>
@@ -279,7 +279,7 @@ $updates_exist = "false";
         <tr>
         <td width="30%">
           <form name="denyhosts_restart" method="POST" action="/update.htm" target="progressFrame">
-            <input type="hidden" name="cmd" value="/etc/rc.d/rc.denyhosts">
+            <input type="hidden" name="cmd" value="/usr/local/emhttp/plugins/denyhosts/scripts/rc.denyhosts">
             <input type="hidden" name="arg1" value="restart">
             <input type="submit" name="runCmd" value="Restart">
           </form>
@@ -291,7 +291,7 @@ $updates_exist = "false";
         <tr>
         <td width="30%">
           <form name="denyhosts_start" method="POST" action="/update.htm" target="progressFrame">
-            <input type="hidden" name="cmd" value="/etc/rc.d/rc.denyhosts">
+            <input type="hidden" name="cmd" value="/usr/local/emhttp/plugins/denyhosts/scripts/rc.denyhosts">
             <input type="hidden" name="arg1" value="buttonstart">
             <input type="submit" name="runCmd" value="Start">
           </form>
@@ -542,38 +542,38 @@ checkRUNNING(document.denyhosts_settings);
   
   function startdenyhosts() {
     global $newline, $log;
-    exec_log("/etc/rc.d/rc.denyhosts start");
+    exec_log("/usr/local/emhttp/plugins/denyhosts/scripts/rc.denyhosts start");
   }
 
   function buttonstartdenyhosts() {
     global $newline, $log;
-    exec_log("/etc/rc.d/rc.denyhosts buttonstart");
+    exec_log("/usr/local/emhttp/plugins/denyhosts/scripts/rc.denyhosts buttonstart");
   }
 
   function restartdenyhosts() {
     global $newline, $log;
-    exec_log("/etc/rc.d/rc.denyhosts restart");
+    exec_log("/usr/local/emhttp/plugins/denyhosts/scripts/rc.denyhosts restart");
   }
   
   function stopdenyhosts() {
     global $newline, $log;
-    exec_log("/etc/rc.d/rc.denyhosts stop");
+    exec_log("/usr/local/emhttp/plugins/denyhosts/scripts/rc.denyhosts stop");
   }
 
   function updatedenyhosts() {
     global $newline, $log;
-    exec_log("/etc/rc.d/rc.denyhosts updateplg");
+    exec_log("/usr/local/emhttp/plugins/denyhosts/scripts/rc.denyhosts updateplg");
   }
   
   function enabledenyhosts() {
     global $newline, $log, $SERVICE, $WORK_DIR, $PURGE_DENY, $DENY_THRESHOLD_INVALID, $DENY_THRESHOLD_VALID, $DENY_THRESHOLD_ROOT, $DENY_THRESHOLD_RESTRICTED, $SUSPICIOUS_LOGIN_REPORT_ALLOWED_HOSTS, $HOSTNAME_LOOKUP, $AGE_RESET_VALID, $AGE_RESET_ROOT, $AGE_RESET_RESTRICTED, $AGE_RESET_INVALID, $DAEMON_SLEEP, $DAEMON_PURGE;
-    exec_log("/etc/rc.d/rc.denyhosts $SERVICE $WORK_DIR $PURGE_DENY $DENY_THRESHOLD_INVALID $DENY_THRESHOLD_VALID $DENY_THRESHOLD_ROOT $DENY_THRESHOLD_RESTRICTED $SUSPICIOUS_LOGIN_REPORT_ALLOWED_HOSTS $HOSTNAME_LOOKUP $AGE_RESET_VALID $AGE_RESET_ROOT $AGE_RESET_RESTRICTED $AGE_RESET_INVALID $DAEMON_SLEEP $DAEMON_PURGE"); 
+    exec_log("/usr/local/emhttp/plugins/denyhosts/scripts/rc.denyhosts $SERVICE $WORK_DIR $PURGE_DENY $DENY_THRESHOLD_INVALID $DENY_THRESHOLD_VALID $DENY_THRESHOLD_ROOT $DENY_THRESHOLD_RESTRICTED $SUSPICIOUS_LOGIN_REPORT_ALLOWED_HOSTS $HOSTNAME_LOOKUP $AGE_RESET_VALID $AGE_RESET_ROOT $AGE_RESET_RESTRICTED $AGE_RESET_INVALID $DAEMON_SLEEP $DAEMON_PURGE"); 
   }
 
   function disabledenyhosts() {
     global $newline, $log, $SERVICE, $WORK_DIR, $PURGE_DENY, $DENY_THRESHOLD_INVALID, $DENY_THRESHOLD_VALID, $DENY_THRESHOLD_ROOT, $DENY_THRESHOLD_RESTRICTED, $SUSPICIOUS_LOGIN_REPORT_ALLOWED_HOSTS, $HOSTNAME_LOOKUP, $AGE_RESET_VALID, $AGE_RESET_ROOT, $AGE_RESET_RESTRICTED, $AGE_RESET_INVALID, $DAEMON_SLEEP, $DAEMON_PURGE;
     //echo "<script type='text/javascript'>alert('DAEMON_PURGE: $DAEMON_PURGE');</script>";
-    exec_log("/etc/rc.d/rc.denyhosts $SERVICE $WORK_DIR $PURGE_DENY $DENY_THRESHOLD_INVALID $DENY_THRESHOLD_VALID $DENY_THRESHOLD_ROOT $DENY_THRESHOLD_RESTRICTED $SUSPICIOUS_LOGIN_REPORT_ALLOWED_HOSTS $HOSTNAME_LOOKUP $AGE_RESET_VALID $AGE_RESET_ROOT $AGE_RESET_RESTRICTED $AGE_RESET_INVALID $DAEMON_SLEEP $DAEMON_PURGE"); 
+    exec_log("/usr/local/emhttp/plugins/denyhosts/scripts/rc.denyhosts $SERVICE $WORK_DIR $PURGE_DENY $DENY_THRESHOLD_INVALID $DENY_THRESHOLD_VALID $DENY_THRESHOLD_ROOT $DENY_THRESHOLD_RESTRICTED $SUSPICIOUS_LOGIN_REPORT_ALLOWED_HOSTS $HOSTNAME_LOOKUP $AGE_RESET_VALID $AGE_RESET_ROOT $AGE_RESET_RESTRICTED $AGE_RESET_INVALID $DAEMON_SLEEP $DAEMON_PURGE"); 
   }
    
   function exec_log($cmd) {
@@ -603,7 +603,7 @@ checkRUNNING(document.denyhosts_settings);
 </INLINE>
 </FILE>
 
-<FILE Name="/usr/local/emhttp/plugins/$name;/scripts/rc.&name;" Mode="0770">
+<FILE Name="/usr/local/emhttp/plugins/&name;/scripts/rc.&name;" Mode="0770">
 <INLINE>
 <![CDATA[
 #!/bin/bash
@@ -789,7 +789,7 @@ esac
 #!/bin/bash
 # include our config vars and check if the service is set to enable.  if so, bring it up
 source /boot/config/plugins/&name;/denyhosts.cfg
-[[ $SERVICE = "enable" ]] &amp;&amp; /usr/local/emhttp/plugins/$name;/scripts/rc.&name; buttonstart
+[[ $SERVICE = "enable" ]] &amp;&amp; /usr/local/emhttp/plugins/&name;/scripts/rc.&name; buttonstart
 </INLINE>
 </FILE>
 
@@ -797,7 +797,7 @@ source /boot/config/plugins/&name;/denyhosts.cfg
 <FILE Name="/usr/local/emhttp/plugins/&name;/event/unmounting_disks" Mode="0770">
 <INLINE>
 #!/bin/bash
-/usr/local/emhttp/plugins/$name;/scripts/rc.&name; stop
+/usr/local/emhttp/plugins/&name;/scripts/rc.&name; stop
 </INLINE>
 </FILE>
 
@@ -813,11 +813,11 @@ if [ "&devplugin;" == "true" ]; then
     ln -s /boot/config/plugins/&name;.php /usr/local/emhttp/plugins/&name;/&name;.php
   fi
   if [ -f /boot/config/plugins/rc.&name; ]; then
-    rm -f /usr/local/emhttp/plugins/$name;/scripts/rc.&name;
-    ln -s /boot/config/plugins/rc.&name; /usr/local/emhttp/plugins/$name;/scripts/rc.&name;
+    rm -f /usr/local/emhttp/plugins/&name;/scripts/rc.&name;
+    ln -s /boot/config/plugins/rc.&name; /usr/local/emhttp/plugins/&name;/scripts/rc.&name;
   else
-    mv /usr/local/emhttp/plugins/$name;/scripts/rc.&name; /boot/config/plugins/rc.&name;
-    ln -s /boot/config/plugins/rc.&name; /usr/local/emhttp/plugins/$name;/scripts/rc.&name;
+    mv /usr/local/emhttp/plugins/&name;/scripts/rc.&name; /boot/config/plugins/rc.&name;
+    ln -s /boot/config/plugins/rc.&name; /usr/local/emhttp/plugins/&name;/scripts/rc.&name;
   fi
 fi
 </INLINE>
