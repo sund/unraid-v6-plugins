@@ -2,8 +2,10 @@
 
 ## Details
 
-Based on OverByrn's collection of plugins for UnRAID v6, I have started maintaining the ssh plugin for maintaining settings.
-I will soon add Denyhosts.  The other items will likely be removed from the list below as afaik they are already being supported with Docker containers.
+These are based on OverByrn's collection of plugins for UnRAID v6<br>
+I have made changes that allow both ssh and Denyhosts to work with v6.1.  I cannot say for certain that they are best practice but they do work on two servers that I maintain.<br>
+
+The other items will likely be removed from the list below as afaik they are already being supported with Docker containers.
 
 * **Beets**: The purpose of beets is to get your music collection right once and for all. It catalogs your collection, automatically improving its metadata as it goes using the MusicBrainz database. (It also downloads cover art for albums it imports.) Then it provides a bouquet of tools for manipulating and accessing your music.
 
