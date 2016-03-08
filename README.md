@@ -22,13 +22,13 @@ I will soon add Denyhosts.  The other items will likely be removed from the list
 ## Download Links
 Use the following direct links to download each plugin:
 
-Beets - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/beets.plg)<br>
-DenyHosts - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/denyhosts.plg)<br>
-Dropbox - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/dropbox.plg)<br>
-NZBGet - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/nzbget.plg)<br>
+NOT PORTED TO 6.1 Beets - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/beets.plg)<br>
+DenyHosts - (https://raw.githubusercontent.com/docgyver/unraid-v6-plugins/master/denyhosts.plg)<br>
+NOT PORTED TO 6.1 Dropbox - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/dropbox.plg)<br>
+NOT PORTED TO 6.1 NZBGet - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/nzbget.plg)<br>
 SSH - (https://raw.githubusercontent.com/docgyver/unraid-v6-plugins/master/ssh.plg)<br>
-LMS - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/lms.plg)<br>
-pyload - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/pyload.plg)<br>
+NOT PORTED TO 6.1 LMS - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/lms.plg)<br>
+NOT PORTED TO 6.1 pyload - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/pyload.plg)<br>
 
 ## Installation
 <p>
@@ -112,5 +112,4 @@ Support requests should be made in the UnRAID forum. Please use the following th
 (http://lime-technology.com/forum/index.php?topic=39169.0)<br>
 
 
-Kind Regards,<br>
-overbyrn
+DocGyver..
