@@ -2,8 +2,10 @@
 
 ## Details
 
-Based on OverByrn's collection of plugins for UnRAID v6, I have started maintaining the ssh plugin for maintaining settings.
-I will soon add Denyhosts.  The other items will likely be removed from the list below as afaik they are already being supported with Docker containers.
+These are based on OverByrn's collection of plugins for UnRAID v6<br>
+I have made changes that allow both ssh and Denyhosts to work with v6.1.  I cannot say for certain that they are best practice but they do work on two servers that I maintain.<br>
+
+The other items will likely be removed from the list below as afaik they are already being supported with Docker containers.
 
 * **Beets**: The purpose of beets is to get your music collection right once and for all. It catalogs your collection, automatically improving its metadata as it goes using the MusicBrainz database. (It also downloads cover art for albums it imports.) Then it provides a bouquet of tools for manipulating and accessing your music.
 
@@ -22,13 +24,13 @@ I will soon add Denyhosts.  The other items will likely be removed from the list
 ## Download Links
 Use the following direct links to download each plugin:
 
-Beets - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/beets.plg)<br>
-DenyHosts - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/denyhosts.plg)<br>
-Dropbox - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/dropbox.plg)<br>
-NZBGet - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/nzbget.plg)<br>
+NOT PORTED TO 6.1 Beets - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/beets.plg)<br>
+DenyHosts - (https://raw.githubusercontent.com/docgyver/unraid-v6-plugins/master/denyhosts.plg)<br>
+NOT PORTED TO 6.1 Dropbox - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/dropbox.plg)<br>
+NOT PORTED TO 6.1 NZBGet - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/nzbget.plg)<br>
 SSH - (https://raw.githubusercontent.com/docgyver/unraid-v6-plugins/master/ssh.plg)<br>
-LMS - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/lms.plg)<br>
-pyload - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/pyload.plg)<br>
+NOT PORTED TO 6.1 LMS - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/lms.plg)<br>
+NOT PORTED TO 6.1 pyload - (https://raw.githubusercontent.com/overbyrn/unraid-v6-plugins/master/pyload.plg)<br>
 
 ## Installation
 <p>
@@ -109,8 +111,7 @@ The plug-in has been designed to check for the existance of a public key for eac
 Please provide feedback to any problems encountered or to request enhancements or missing features that you would like to see added.  
 
 Support requests should be made in the UnRAID forum. Please use the following thread for all support queries;
-(http://lime-technology.com/forum/index.php?topic=39169.0)<br>
+(http://lime-technology.com/forum/index.php?topic=47289.0)<br>
 
 
-Kind Regards,<br>
-overbyrn
+DocGyver..
