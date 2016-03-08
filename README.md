@@ -111,7 +111,7 @@ The plug-in has been designed to check for the existance of a public key for eac
 Please provide feedback to any problems encountered or to request enhancements or missing features that you would like to see added.  
 
 Support requests should be made in the UnRAID forum. Please use the following thread for all support queries;
-(http://lime-technology.com/forum/index.php?topic=39169.0)<br>
+(http://lime-technology.com/forum/index.php?topic=47289.0)<br>
 
 
 DocGyver..
