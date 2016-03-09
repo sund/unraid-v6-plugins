@@ -25,7 +25,7 @@ The plugin installs DenyHosts, a log-based intrusion prevention security tool fo
 Plugin file locations:
  /boot/plugins/denyhosts.plg                                            # this file
 
- /boot/packages/python-2.7.5-x86_64-1.txz                               # python 2.7.5 
+ /boot/packages/python-2.7.10-x86_64-1.txz                              # python 2.7.10
  /boot/config/plugins/denyhosts/DenyHosts-2.6.tar.gz                    # denyhosts source
  
  /boot/config/plugins/denyhosts/denyhosts.cfg                           # non-volatile configuration
@@ -47,8 +47,8 @@ Plugin file locations:
  
 -->
 
-<FILE Name="/boot/packages/python-2.7.5-x86_64-1.txz" Run="upgradepkg --install-new">
-<URL>-q --no-check-certificate &packageURL;/python-2.7.5-x86_64-1.txz</URL>
+<FILE Name="/boot/packages/python-2.7.10-x86_64-1.txz" Run="upgradepkg --install-new">
+<URL>-q --no-check-certificate &packageURL;/python-2.7.10-x86_64-1.txz</URL>
 </FILE>
 
 <FILE Name="/boot/config/plugins/&name;/DenyHosts-2.6.tar.gz">
