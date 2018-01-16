@@ -397,7 +397,7 @@ checkRUNNING(document.ssh_settings);
 </INLINE>
 </FILE>
 
-<FILE Name="/usr/local/emhttp/plugins/&name;/scripts/rc.&name;" Mode="0770">
+<FILE Name="/usr/local/emhttp/plugins/&name;/scripts/rc.&name;" Mode="0755">
 <INLINE>
 <![CDATA[
 #!/bin/bash
