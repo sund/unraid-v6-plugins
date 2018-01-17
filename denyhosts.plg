@@ -457,7 +457,7 @@ checkRUNNING(document.denyhosts_settings);
 </INLINE>
 </FILE>
 
-<FILE Name="/usr/local/emhttp/plugins/&name;/denyhostsctl.php" Mode="0770">
+<FILE Name="/usr/local/emhttp/plugins/&name;/denyhostsctl.php" Mode="0755">
 <INLINE>
 <![CDATA[
 <?PHP
