@@ -118,9 +118,17 @@ rm -rf /tmp/DenyHosts-2.6
 </INLINE>
 </FILE>
 
-<!--
-The 'remove' script.
--->
+<!-- POST-INSTALL SCRIPT -->
+<FILE Run="/bin/bash">
+<INLINE>
+# Update folder permissions
+chmod 755 /usr/local/emhttp/plugins/&name;
+chmod 755 /usr/local/emhttp/plugins/&name;/icons
+chmod 755 /usr/local/emhttp/plugins/&name;/scripts
+</INLINE>
+</FILE>
+
+<!--The 'remove' script.-->
 <FILE Run="/bin/bash" Method="remove">
 <INLINE>
 rm -r /usr/local/emhttp/plugins/&name;
