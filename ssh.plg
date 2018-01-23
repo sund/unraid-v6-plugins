@@ -3,9 +3,10 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name       "ssh">
 <!ENTITY author     "sund">
-<!ENTITY version    "2018.01.18d">
+<!ENTITY version    "2018.01.18e">
 <!ENTITY category   "Network Services">
-<!ENTITY pluginURL  "https://raw.github.com/sund/unraid-v6-plugins/master/&name;.plg">
+<!ENTITY pluginBASE  "https://raw.github.com/sund/unraid-v6-plugins/master">
+<!ENTITY pluginURL  "&pluginBASE;/&name;.plg">
 <!ENTITY packageURL "https://github.com/sund/unraid-v6-plugins/releases/download/&name;">
 <!ENTITY devplugin  "false">
 ]>
@@ -14,7 +15,8 @@
          author="&author;"
          version="&version;"
          category="&category;"
-         pluginURL="&pluginURL;">
+         pluginURL="&pluginURL;"
+         pluginBASE="&pluginBASE;">
 
 <CHANGES>
 ##&name;
@@ -47,11 +49,11 @@ Plugin file locations:
 -->
 
 <FILE Name="/boot/config/plugins/&name;/read_me.txt">
-<URL>&pluginURL;/ssh_files/config/read_me.txt</URL>
+<URL>&pluginBASE;/ssh_files/config/read_me.txt</URL>
 </FILE>
 
 <FILE Name="/boot/config/plugins/&name;/&name;.cfg">
-<URL>&pluginURL;/ssh_files/config/&name;.cfg</URL>
+<URL>&pluginBASE;/ssh_files/config/&name;.cfg</URL>
 </FILE>
 
 <FILE Run="/bin/bash" Method="install">
@@ -96,35 +98,35 @@ rm -rf /boot/config/plugins/&name;
 </FILE>
 
 <FILE Name="/usr/local/emhttp/plugins/&name;/&name;.png" Type="base64">
-<URL>&pluginURL;/ssh_files/emhttp/&name;.png</URL>
+<URL>&pluginBASE;/ssh_files/emhttp/&name;.png</URL>
 </FILE>
 
 <FILE Name="/usr/local/emhttp/plugins/&name;/icons/&name;.png" Type="base64">
-<URL>&pluginURL;/ssh_files/emhttp/icons/&name;.png</URL>
+<URL>&pluginBASE;/ssh_files/emhttp/icons/&name;.png</URL>
 </FILE>
 
 <FILE Name="/usr/local/emhttp/plugins/&name;/device_status.png" Type="base64">
-<URL>&pluginURL;/ssh_files/emhttp/device_status.png</URL>
+<URL>&pluginBASE;/ssh_files/emhttp/device_status.png</URL>
 </FILE>
 
 <FILE Name="/usr/local/emhttp/plugins/&name;/new_config.png" Type="base64">
-<URL>&pluginURL;/ssh_files/emhttp/new_config.png</URL>
+<URL>&pluginBASE;/ssh_files/emhttp/new_config.png</URL>
 </FILE>
 
 <FILE Name="/usr/local/emhttp/plugins/&name;/information.png" Type="base64">
-<URL>&pluginURL;/ssh_files/emhttp/information.png</URL>
+<URL>&pluginBASE;/ssh_files/emhttp/information.png</URL>
 </FILE>
 
 <FILE Name="/usr/local/emhttp/plugins/&name;/README.md">
-<URL>&pluginURL;/ssh_files/emhttp/README.md</URL>
+<URL>&pluginBASE;/ssh_files/emhttp/README.md</URL>
 </FILE>
 
 <FILE Name="/usr/local/emhttp/plugins/&name;/&name;.page">
-<URL>&pluginURL;/ssh_files/emhttp/&name;.page</URL>
+<URL>&pluginBASE;/ssh_files/emhttp/&name;.page</URL>
 </FILE>
 
 <FILE Name="/usr/local/emhttp/plugins/&name;/scripts/rc.&name;" Mode="0755">
-<URL>&pluginURL;/ssh_files/emhttp/scripts/rc.&name;</URL>
+<URL>&pluginBASE;/ssh_files/emhttp/scripts/rc.&name;</URL>
 </FILE>
 
 <FILE Name="/tmp/plugin-development" Run="/bin/bash">
