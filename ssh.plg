@@ -74,6 +74,7 @@ if [ ! -f /boot/config/plugins/&name;/putty-0.64-$(/usr/bin/uname -m)-1rj.txz ];
   echo $NETCHECK
     wget --no-check-certificate -q -P /boot/config/plugins/&name; &packageURL;/putty-0.64-$(/usr/bin/uname -m)-1rj.txz
   else
+  echo &version;
     exit 1
   fi
 fi
