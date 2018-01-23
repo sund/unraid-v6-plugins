@@ -1,0 +1,239 @@
+#!/bin/bash
+# start|stop|restart|enable|disable|buttonstart ssh.
+
+ssh_start()
+{
+  # no-op if not enabled
+  if [ $SERVICE != "enable" ]; then
+    #echo "Service is not enabled!"
+    #sleep 1
+    return
+  fi
+
+  # no-op if already running
+  if [ -f /var/run/sshd.pid ]; then
+    #echo "SSH already running"
+    #sleep 1
+    return
+  fi
+
+  echo "Starting SSH..."
+  sleep 1
+
+  /usr/sbin/sshd
+
+  echo "... OK"
+  sleep 1
+}
+
+ssh_stop()
+{
+  # no-op if already running
+  if [ ! -f /var/run/sshd.pid ]; then
+    #echo "SSH already stopped"
+    #sleep 1
+    return
+  fi
+
+  echo "Stopping SSH..."
+  sleep 1
+
+  killall sshd
+
+  echo "... OK"
+  sleep 1
+}
+
+ssh_restart() {
+  if [ -r /var/run/sshd.pid ]; then
+    echo "Restarting parent listener process only. To kill every sshd process, you must use stop"
+    sleep 3
+    kill `cat /var/run/sshd.pid`
+  else
+    echo "Warning: there does not appear to be a parent instance of sshd running."
+    sleep 3
+    exit 1
+  fi
+  sleep 1
+  ssh_start
+}
+
+ssh_buttonstart()
+{
+  CONFIG="/boot/config/plugins/ssh/ssh.cfg"
+  if [ -f $CONFIG ]; then
+    # a less greedy sed.  only replaces the first occurance of disabled with enabled.  ie. will only hit service line which is (usually) always first in cfg
+	sed -i "0,/"disable"/s/"disable"/"enable/"" $CONFIG 2>/dev/null
+    SERVICE=enable
+
+    write_config
+    ssh_start
+
+  fi
+}
+
+write_config()
+{
+  echo "Updating Config..."
+  sleep 1
+
+  echo "# ssh configuration" > /boot/config/plugins/ssh/ssh.cfg
+  echo "SERVICE=\"$SERVICE\"" >> /boot/config/plugins/ssh/ssh.cfg
+  echo "PORT=\"$PORT\"" >> /boot/config/plugins/ssh/ssh.cfg
+  echo "USERLIST=\"$USERLIST\"" >> /boot/config/plugins/ssh/ssh.cfg
+  echo "PERMITROOTLOGIN=\"$PERMITROOTLOGIN\"" >> /boot/config/plugins/ssh/ssh.cfg
+  echo "MAXAUTHTRIES=\"$MAXAUTHTRIES\"" >> /boot/config/plugins/ssh/ssh.cfg
+  echo "PASSWORDAUTHENTICATION=\"$PASSWORDAUTHENTICATION\"" >> /boot/config/plugins/ssh/ssh.cfg
+  echo "PERMITEMPTYPASSWORDS=\"$PERMITEMPTYPASSWORDS\"" >> /boot/config/plugins/ssh/ssh.cfg
+  echo "GATEWAYPORTS=\"$GATEWAYPORTS\"" >> /boot/config/plugins/ssh/ssh.cfg
+
+  # only loop thru userlist if some/one were selected in webgui.  no users selected = -1
+  if [[ $USERLIST != "-1" ]]; then
+    # Account for fact $USERLIST is one or many comma separated user names
+    USERLOOP=${USERLIST},
+    while echo $USERLOOP | grep \, &>/dev/null
+    do
+      USERTEMP=${USERLOOP%%\,*}
+      USERLOOP=${USERLOOP#*\,}
+
+      #echo "Iterating through user: $USERTEMP"
+
+      # Create home directory + .ssh subdirectoy and assign same + shell to user
+      if [ ! -d /home/$USERTEMP ]; then
+        #echo "Creating home dir: {/home/$USERTEMP} for $USERTEMP..."
+        mkdir -p /home/$USERTEMP/.ssh
+      fi
+      chown -R $USERTEMP:users /home/$USERTEMP
+      chmod -R 0755 /home/$USERTEMP
+
+      #echo "Assigning shell {/bin/bash} & home dir: {/home/$USERTEMP} to user $USERTEMP..."
+      usermod -d /home/$USERTEMP -s /bin/bash $USERTEMP 2>/dev/null
+
+      # Check for existance of "authorised_keys" file at /boot/config/plugin/ssh/{someuser}.  Copy to /home/{someuser} if found.  Enables
+      # user to authenticate with private / public key pair.
+      # NB: if file is not found, an empty directory path will be created on the flash drive, thus making it slightly easier for unraid user
+      # to see what/where to maintain key files
+      # ** IT IS CURRENTLY THE USERS RESPONSIBILITY TO PRE-GENERATE A PUBLIC/PRIVATE KEYPAIR **
+      if [ -f /boot/config/plugins/ssh/$USERTEMP/.ssh/authorized_keys ]; then
+        cp --preserve=timestamps -p /boot/config/plugins/ssh/$USERTEMP/.ssh/authorized_keys /home/$USERTEMP/.ssh/authorized_keys
+        chmod 700 /home/$USERTEMP/.ssh
+        chmod 600 /home/$USERTEMP/.ssh/authorized_keys
+        chown $USERTEMP:users /home/$USERTEMP/.ssh/authorized_keys
+      else
+        mkdir -p /boot/config/plugins/ssh/$USERTEMP/.ssh 2>/dev/null
+        # put a lil help file in each user dir, saying what to do
+        cp /boot/config/plugins/ssh/read_me.txt /boot/config/plugins/ssh/$USERTEMP/.ssh/read_me.txt 2>/dev/null
+      fi
+    done
+  fi
+
+  # check if PermitRootLogin came thru as "YES", in which case check for authorized_keys file in plugin sub-dir.
+  if [[ $PERMITROOTLOGIN = "yes" ]]; then
+    [ ! -d /root/.ssh ] && mkdir /root/.ssh
+    if [ -f /boot/config/plugins/ssh/root/.ssh/authorized_keys ]; then
+	  cp --preserve=timestamps -p /boot/config/plugins/ssh/root/.ssh/authorized_keys /root/.ssh/authorized_keys
+      chmod 700 /root/.ssh
+      chmod 600 /root/.ssh/authorized_keys
+      chown root:root /root/.ssh/authorized_keys
+	fi
+  fi
+
+  # the host keys get created during plugin install script and if not present are generated
+  # using ssh-keygen and copied to flash to persist reboot.  we already know they're present
+  # at /boot/config/plugins/ssh so just copy them over to /etc/ssh and set correct perms
+  # this is a global setting, not user specific, so do it regardless if sshuser empty or not
+  # this way it will allow root to login via ssh as long as PermitRootLogin=yes and either
+  # root has been assigned a password or if no password then AllowEmptyPaswords must = yes
+  #cp --preserve=timestamps -p /boot/config/plugins/ssh/ssh_host_*key* /etc/ssh
+  #chmod 600 /etc/ssh/ssh_host_*key
+  #chmod 644 /etc/ssh/ssh*.pub
+
+  # do the same for sshd_config and ssh_config.  allows users to manually edit sshd_config on the flash drive in case additional config needed.
+  #cp --preserve=timestamps -p -f /boot/config/plugins/ssh/sshd_config /etc/ssh/sshd_config
+  #cp --preserve=timestamps -p -f /boot/config/plugins/ssh/ssh_config /etc/ssh/ssh_config
+
+  # update sshd_config file with values set in webgui
+  sed -i 's/.*Port .*/Port '$PORT'/' /etc/ssh/sshd_config
+  sed -i 's/.*PermitRootLogin.*/PermitRootLogin '$PERMITROOTLOGIN'/' /etc/ssh/sshd_config
+  sed -i 's/.*MaxAuthTries.*/MaxAuthTries '$MAXAUTHTRIES'/' /etc/ssh/sshd_config
+  sed -i 's/.*PasswordAuthentication.*/PasswordAuthentication '$PASSWORDAUTHENTICATION'/' /etc/ssh/sshd_config
+  sed -i 's/.*PermitEmptyPasswords.*/PermitEmptyPasswords '$PERMITEMPTYPASSWORDS'/' /etc/ssh/sshd_config
+  sed -i 's/.*GatewayPorts.*/GatewayPorts '$GATEWAYPORTS'/' /etc/ssh/sshd_config
+
+  # preserve live /etc/sshd_config file on flash. When unRAID reboots, the standard ssh startup baked into unRAID v6 will
+  # copy all files from /boot/config/ssh to /etc/ssh. This ensures the correct config is maintained after a reboot. Failure
+  # to do this will result in the user having to go into SSH plugin webgui page, stopping and starting SSH in order to
+  # produce the same effect
+  cp -f /etc/ssh/sshd_config /boot/config/ssh/sshd_config
+
+  echo "... OK"
+  sleep 1
+}
+
+ssh_enable()
+{
+  echo "Applying Settings ($1) ..."
+  sleep 1
+
+  SERVICE="$1" #enable
+  PORT="$2"
+  USERLIST="$3"
+  PERMITROOTLOGIN="$4"
+  MAXAUTHTRIES="$5"
+  PASSWORDAUTHENTICATION="$6"
+  PERMITEMPTYPASSWORDS="$7"
+  GATEWAYPORTS="$8"
+
+  write_config
+  ssh_start
+
+  echo "... OK"
+  sleep 1
+}
+
+ssh_disable()
+{
+  echo "Applying Settings ($1) ..."
+  sleep 1
+
+  SERVICE="$1" #disable
+  PORT="$2"
+  USERLIST="$3"
+  PERMITROOTLOGIN="$4"
+  MAXAUTHTRIES="$5"
+  PASSWORDAUTHENTICATION="$6"
+  PERMITEMPTYPASSWORDS="$7"
+  GATEWAYPORTS="$8"
+
+  write_config
+  ssh_stop
+
+  echo "... OK"
+  sleep 1
+}
+
+# read our configuration
+source /boot/config/plugins/ssh/ssh.cfg
+
+case "$1" in
+  'start')
+    ssh_start
+  ;;
+  'stop')
+    ssh_stop
+  ;;
+  'restart')
+    ssh_restart
+  ;;
+  'enable')
+    ssh_enable $1 $2 $3 $4 $5 $6 $7 $8
+  ;;
+  'disable')
+    ssh_disable $1 $2 $3 $4 $5 $6 $7 $8
+  ;;
+  'buttonstart')
+    ssh_buttonstart
+  ;;
+  *)
+    echo "usage $0 start|stop|restart|enable|disable|buttonstart"
+esac

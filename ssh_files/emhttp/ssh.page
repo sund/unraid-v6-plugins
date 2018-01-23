@@ -1,0 +1,262 @@
+<![CDATA[
+Menu="NetworkServices"
+Title="SSH"
+Icon="ssh.png"
+---
+<?PHP
+$ssh_cfg = parse_ini_file( "/boot/config/plugins/ssh/ssh.cfg");
+$ssh_running = file_exists( "/var/run/sshd.pid") ? "yes" : "no";
+
+//Get local plugin file version
+$ssh_localplg = shell_exec('grep "<\!ENTITY version" /boot/config/plugins/ssh.plg | cut -d\" -f2');
+
+//Get remote plugin file version.  Uses Limetech plugin php to perform this function
+$ssh_remoteplg = shell_exec("/usr/local/sbin/plugin check ssh.plg");
+
+//create array of users from passwd file where their UID is greater than or equal to 1000.  ie. assumed to be non-system users
+$useropts = array();
+$command = "awk -F':' '{ if($3 >= 1000) print $1 }' /etc/passwd";
+exec($command, $useropts);
+
+//create array of users from cfg file. explode handles comma separated in case of multi values
+$selectedsshusers  = explode(',', $ssh_cfg['USERLIST']);
+
+//get version of SSH.  Note: ssh reports version to stderr, so redirect stderr (2) to stdout (1)
+$sshversion = shell_exec("/usr/bin/ssh -V 2>&1");
+
+?>
+
+<html>
+<head></head>
+<body>
+
+<div style="width: 49%; float:left; border: 0px solid black;">
+  <div id="title">
+    <span class="left">Status:&nbsp;<img src='/plugins/ssh/device_status.png'>
+      <?if ($ssh_running=="yes"):?>
+        <span class="green"><b>SSH is RUNNING</b></span>
+      <?else:?>
+        <span class="red"><b>SSH is NOT RUNNING</b></span>
+      <?endif;?>
+    </span>
+  </div>
+
+  <div style="border: 0px solid black;">
+    <span class="left">
+      <p>
+        OpenSSH Application Version: <span class="green-text"><b><?=$sshversion?></b></span>
+      </p>
+	</span>
+  </div>
+
+  <br></br>
+
+  <div style="border: 0px solid black;">
+    <table>
+      <tr style="font-weight:bold; color:#333333; background:#F0F0F0; text-shadow:0 1px 1px #FFFFFF;">
+        <td>Plugin</td>
+        <td>Local Version</td>
+        <td>Online Version</td>
+      </tr>
+      <tr style="font-weight:bold; background:#FFFFFF;">
+        <td>SSH Plugin</td>
+        <td>
+          <span class="green-text"><?=$ssh_localplg?></span>
+        </td>
+        <td>
+          <span class="green-text"><?=$ssh_remoteplg?></span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <br></br>
+
+  <div>
+    <table>
+      <tr style="font-weight:bold; color:#333333; background:#F0F0F0; text-shadow:0 1px 1px #FFFFFF;">
+        <td colspan="2">Control Actions</td>
+      </tr>
+
+      <?if ($ssh_running=="yes"):?>
+        <tr>
+        <td width="30%">
+          <form name="ssh_start_stop" method="POST" action="/update.htm" target="progressFrame">
+            <input type="hidden" name="cmd" value="/plugins/ssh/scripts/rc.ssh">
+            <input type="hidden" name="arg1" value="stop">
+            <input type="submit" name="runCmd" value="Stop">
+          </form>
+        </td>
+        <td>Stop SSH Daemon</td>
+        </tr>
+        <tr>
+        <td width="30%">
+          <form name="ssh_restart" method="POST" action="/update.htm" target="progressFrame">
+            <input type="hidden" name="cmd" value="/plugins/ssh/scripts/rc.ssh">
+            <input type="hidden" name="arg1" value="restart">
+            <input type="submit" name="runCmd" value="Restart">
+          </form>
+        </td>
+        <td>Restart SSH Daemon</td>
+        </tr>
+      <?else:?>
+        <tr>
+        <td width="30%">
+          <form name="ssh_start" method="POST" action="/update.htm" target="progressFrame">
+            <input type="hidden" name="cmd" value="/plugins/ssh/scripts/rc.ssh">
+            <input type="hidden" name="arg1" value="buttonstart">
+            <input type="submit" name="runCmd" value="Start">
+          </form>
+        </td>
+        <td>Start SSH Daemon</td>
+        </tr>
+      <?endif;?>
+    </table>
+  </div>
+  <br></br>
+
+  <br></br>
+  <br></br>
+</div>
+
+<div style="width: 49%; float:right; border: 0px solid black;">
+  <div id="title">
+    <span class="left">Configuration:&nbsp;<img src='/plugins/ssh/new_config.png'></span>
+  </div>
+  <form name="ssh_settings" id="ssh_settings" method="POST" action="/update.htm" target="progressFrame" onsubmit="return validateForm();">
+  <!--note to self: the /return/ in the onsubmit event is important as without it, the submit action is still processed-->
+    <input type="hidden" name="cmd" value="/plugins/ssh/scripts/rc.ssh">
+    <input type="hidden" name="arg3" id="arg3" maxlength="60" value="wibble">
+
+    <table class="settings">
+      <tr>
+      <td>Enable SSH Service:</td>
+      <td>
+        <select name="arg1" id="arg1" size="1">
+          <?=mk_option($ssh_cfg['SERVICE'], "disable", "No");?>
+          <?=mk_option($ssh_cfg['SERVICE'], "enable", "Yes");?>
+        </select>
+      </td>
+      </tr>
+      <tr>
+      <td>SSH Port:</td>
+      <td>
+        <input type="text" name="arg2" id="arg2" maxlength="5" style="width: 20%;height: 100%;" value="<?=$ssh_cfg['PORT'];?>">
+      </td>
+      </tr>
+      <tr>
+      <td>Available options for SSH Users:</td>
+      <td>
+        <select name="sshusers" id="sshusers" multiple="multiple" size="4" style="width: 50%;height: 100%;">
+          <? foreach ($useropts as $users) { ?>
+          <option <? print (in_array($users,$selectedsshusers)) ? "selected" : "" ; ?> value="<?=$users;?>">
+          <? print $users; ?>
+          </option>
+          <? } ?>
+        </select>
+      </td>
+      </tr>
+      <tr>
+      <td>Permit Root Login:</td>
+      <td>
+        <select name="arg4" id="arg4" size="1">
+          <?=mk_option($ssh_cfg['PERMITROOTLOGIN'], "yes", "Yes");?>
+          <?=mk_option($ssh_cfg['PERMITROOTLOGIN'], "no", "No");?>
+        </select>
+      </td>
+      </tr>
+      <tr>
+      <td>Max Auth Retries:</td>
+      <td>
+        <input type="text" name="arg5" id="arg5" maxlength="5" value="<?=$ssh_cfg['MAXAUTHTRIES'];?>">
+      </td>
+      </tr>
+      <tr>
+      <td>Password Authentication:</td>
+      <td>
+        <select name="arg6" id="arg6" size="1">
+          <?=mk_option($ssh_cfg['PASSWORDAUTHENTICATION'], "yes", "Yes");?>
+          <?=mk_option($ssh_cfg['PASSWORDAUTHENTICATION'], "no", "No");?>
+        </select>
+      </td>
+      </tr>
+      <tr>
+      <td>Permit Empty Passwords:</td>
+      <td>
+        <select name="arg7" id="arg7" size="1">
+          <?=mk_option($ssh_cfg['PERMITEMPTYPASSWORDS'], "yes", "Yes");?>
+          <?=mk_option($ssh_cfg['PERMITEMPTYPASSWORDS'], "no", "No");?>
+        </select>
+      </td>
+      </tr>
+      <tr>
+      <td>Gateway Ports:</td>
+      <td>
+        <select name="arg8" id="arg8" size="1">
+          <?=mk_option($ssh_cfg['GATEWAYPORTS'], "yes", "Yes");?>
+          <?=mk_option($ssh_cfg['GATEWAYPORTS'], "no", "No");?>
+        </select>
+      </td>
+      </tr>
+      <tr>
+    </table>
+
+    <div align="center">
+      <hr size="3" align="center" width="75%" color="grey" style="margin-top:20px;margin-bottom:18px">
+      <input type="submit" name="runCmd" value="Apply"><button type="button" onClick="done();">Done</button>
+    </div>
+  </form>
+  <br></br>
+  <br></br>
+</div>
+
+<script type="text/javascript">
+function onLoad() {
+  // do nothing
+}
+
+function validateForm() {
+  // create comma separated list of users.  empty value if no users selected
+  var sshuserVal = "";
+  var x = 0;
+  for (x = 0; x < document.getElementById('sshusers').length; x++) {
+    if (document.getElementById('sshusers')[x].selected) {
+      sshuserVal = sshuserVal + document.getElementById('sshusers')[x].value + "," ;
+      }
+    }
+  document.getElementById('arg3').value = sshuserVal.replace(/(^\s*,)|(,\s*$)/g, '');  // strip off trailing comma
+  if (document.getElementById('arg3').value == "") {
+	document.getElementById('arg3').value = "-1"
+  }
+
+  document.getElementById('arg2').disabled = false;
+  document.getElementById('arg3').disabled = false;
+  document.getElementById('arg4').disabled = false;
+  document.getElementById('arg5').disabled = false;
+  document.getElementById('arg6').disabled = false;
+  document.getElementById('arg7').disabled = false;
+  document.getElementById('arg8').disabled = false;
+  return(true);
+}
+
+function checkRUNNING(form) {
+    // dont disable arg1 which is the service enable/disable. only disable subsequent fields
+    // note: "disabled" elements do not get submitted. the below will cause these field values to be empty upon apply. a workaround is to
+    //       implement a validation function which is called upon form submit which amongst other things can re-enable the fields
+    if ("<?=$ssh_running;?>" == "yes") {
+    form.arg2.disabled = true;
+    form.arg3.disabled = true;
+    form.arg4.disabled = true;
+    form.arg5.disabled = true;
+    form.arg6.disabled = true;
+    form.arg7.disabled = true;
+    form.arg8.disabled = true;
+  }
+}
+
+onLoad();
+checkRUNNING(document.ssh_settings);
+</script>
+</body>
+</html>
+]]>
