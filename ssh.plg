@@ -16,6 +16,10 @@
          category="&category;"
          pluginURL="&pluginURL;">
 
+<CHANGES>
+##&name;
+</CHANGES>
+
 <!--
 Copyright 2014, Rich Manton (overbyrn)
 Copyright 2016, Todd Pike (docgyver)
