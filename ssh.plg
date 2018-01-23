@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name       "ssh">
 <!ENTITY author     "sund">
-<!ENTITY version    "2018.01.18c">
+<!ENTITY version    "2018.01.18d">
 <!ENTITY category   "Network Services">
 <!ENTITY pluginURL  "https://raw.github.com/sund/unraid-v6-plugins/master/&name;.plg">
 <!ENTITY packageURL "https://github.com/sund/unraid-v6-plugins/releases/download/&name;">
@@ -73,6 +73,9 @@ if [ ! -f /boot/config/plugins/&name;/putty-0.64-$(/usr/bin/uname -m)-1rj.txz ];
 fi
   echo &version;
 /sbin/upgradepkg --install-new /boot/config/plugins/&name;/putty-0.64-$(/usr/bin/uname -m)-1rj.txz
+
+# create ssh application directory
+mkdir -p /usr/local/emhttp/plugins/&name;
 </INLINE>
 </FILE>
 
