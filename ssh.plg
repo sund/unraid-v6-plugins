@@ -69,14 +69,11 @@ if [ -f /etc/rc.d/rc.&name; ]; then
 fi;
 
 if [ ! -f /boot/config/plugins/&name;/putty-0.64-$(/usr/bin/uname -m)-1rj.txz ]; then
-  NETCHECK=$(timeout 25 wget --no-check-certificate -qST4 --spider &pluginURL; 2>&amp;1  | grep HTTP | tail -1 | cut -f1 | awk '{print $NF}')
-  if [ "$NETCHECK" == "OK" ]; then
-  echo $NETCHECK
+
     wget --no-check-certificate -q -P /boot/config/plugins/&name; &packageURL;/putty-0.64-$(/usr/bin/uname -m)-1rj.txz
   else
   echo &version;
-    exit 1
-  fi
+  exit 1
 fi
 /sbin/upgradepkg --install-new /boot/config/plugins/&name;/putty-0.64-$(/usr/bin/uname -m)-1rj.txz
 </INLINE>
