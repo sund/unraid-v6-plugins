@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name       "ssh">
 <!ENTITY author     "sund">
-<!ENTITY version    "2018.01.18f">
+<!ENTITY version    "2018.01.18g">
 <!ENTITY category   "Network Services">
 <!ENTITY pluginBASE  "https://raw.github.com/sund/unraid-v6-plugins/master">
 <!ENTITY pluginURL  "&pluginBASE;/&name;.plg">
