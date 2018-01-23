@@ -76,18 +76,6 @@ mkdir -p /usr/local/emhttp/plugins/&name;
 </INLINE>
 </FILE>
 
-<!-- POST-INSTALL SCRIPT -->
-<FILE Run="/bin/bash">
-<INLINE>
-  echo &version;
-  echo post-install
-# Update folder permissions
-chmod 755 /usr/local/emhttp/plugins/&name;
-chmod 755 /usr/local/emhttp/plugins/&name;/icons
-chmod 755 /usr/local/emhttp/plugins/&name;/scripts
-</INLINE>
-</FILE>
-
 <!--The 'remove' script.-->
 <FILE Run="/bin/bash" Method="remove">
 <INLINE>
@@ -151,6 +139,16 @@ if [ "&devplugin;" == "true" ]; then
 fi
 
 rm /tmp/plugin-development
+</INLINE>
+</FILE>
+
+<!-- POST-INSTALL SCRIPT -->
+<FILE Run="/bin/bash">
+<INLINE>
+# Update folder permissions
+chmod 755 /usr/local/emhttp/plugins/&name;
+chmod 755 /usr/local/emhttp/plugins/&name;/icons
+chmod 755 /usr/local/emhttp/plugins/&name;/scripts
 </INLINE>
 </FILE>
 
