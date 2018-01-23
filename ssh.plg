@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name       "ssh">
 <!ENTITY author     "sund">
-<!ENTITY version    "2018.01.18e">
+<!ENTITY version    "2018.01.18f">
 <!ENTITY category   "Network Services">
 <!ENTITY pluginBASE  "https://raw.github.com/sund/unraid-v6-plugins/master">
 <!ENTITY pluginURL  "&pluginBASE;/&name;.plg">
@@ -97,23 +97,23 @@ rm -rf /boot/config/plugins/&name;
 </INLINE>
 </FILE>
 
-<FILE Name="/usr/local/emhttp/plugins/&name;/&name;.png" Type="base64">
+<FILE Name="/usr/local/emhttp/plugins/&name;/&name;.png">
 <URL>&pluginBASE;/ssh_files/emhttp/&name;.png</URL>
 </FILE>
 
-<FILE Name="/usr/local/emhttp/plugins/&name;/icons/&name;.png" Type="base64">
+<FILE Name="/usr/local/emhttp/plugins/&name;/icons/&name;.png">
 <URL>&pluginBASE;/ssh_files/emhttp/icons/&name;.png</URL>
 </FILE>
 
-<FILE Name="/usr/local/emhttp/plugins/&name;/device_status.png" Type="base64">
+<FILE Name="/usr/local/emhttp/plugins/&name;/device_status.png">
 <URL>&pluginBASE;/ssh_files/emhttp/device_status.png</URL>
 </FILE>
 
-<FILE Name="/usr/local/emhttp/plugins/&name;/new_config.png" Type="base64">
+<FILE Name="/usr/local/emhttp/plugins/&name;/new_config.png">
 <URL>&pluginBASE;/ssh_files/emhttp/new_config.png</URL>
 </FILE>
 
-<FILE Name="/usr/local/emhttp/plugins/&name;/information.png" Type="base64">
+<FILE Name="/usr/local/emhttp/plugins/&name;/information.png">
 <URL>&pluginBASE;/ssh_files/emhttp/information.png</URL>
 </FILE>
 
